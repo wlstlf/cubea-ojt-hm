@@ -1,5 +1,5 @@
 # cubea-ojt-hm
-##cubeA OJT 박현민사원
+## cubeA OJT 박현민사원
 
 # <1차> 누구나 작성이 가능한 게시판 CRUD
 ###### 요구사항 및 페이지구성
