@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="File">
+	
+	<insert id="setFile">
+	INSERT INTO FILE_DB
+	(
+	   FILE_IDX
+	  ,FILE_TYPE
+	  ,PA_IDX
+	  ,ORI_NAME
+	  ,SV_NAME
+	  ,IN_DATE
+	  ,IN_USER
+	  ,IN_IP
+	)
+	VALUES
+	(
+	   FILE_IDX_SEQ.NEXTVAL
+	  ,#{file_type}
+	  ,#{pa_idx}
+	  ,#{ori_name}
+	  ,#{sv_name}
+	  ,SYSDATE
+	  ,#{in_user}
+	  ,#{in_ip}
+	)
+	</insert>
+	
+	<delete id="delFile" parameterType="hashMap">
+	DELETE 
+	FROM FILE_DB 
+	WHERE PA_IDX = #{pa_idx}
+	<if test='!sv_name.equals("") and sv_name != null'>
+	AND SV_NAME = #{sv_name}
+	</if>
+	</delete>
+</mapper>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Webtoon">
+	<resultMap id="WebtoonMap" type="Webtoon">
+		<result column="webtoon_idx" property="webtoon_idx"/>
+		<result column="webtoon_title" property="webtoon_title"/>
+		<result column="webtoon_content" property="webtoon_content"/>
+		<result column="webtoon_summary" property="webtoon_summary"/>
+		<result column="webtoon_author" property="webtoon_author"/>
+		<result column="on_date" property="on_date"/>
+		<result column="thum" property="thum"/>
+		<result column="in_date" property="in_date"/>
+		<result column="in_admin" property="in_admin"/>
+		<result column="up_date" property="up_date"/>
+		<result column="up_admin" property="up_admin"/>
+		<result column="use_yn" property="use_yn"/>
+		<result column="img" property="img"/>
+		<result column="img_ori" property="img_ori"/>
+		<result column="dp_cnt" property="dp_cnt"/>
+		
+		<result column="rnum" property="rnum"/>
+		<result column="in_date_str" property="in_date_str"/>
+		<result column="totalCount" property="totalCount"/>
+		
+		<result column="sv_name" property="sv_name"/>
+	 </resultMap>
+	 
+	 <sql id="webtoon_sql">
+	 	<choose>
+	 		<when test='skey.equals("a")'>
+	 		AND WEBTOON_TITLE LIKE  '%' || #{sval} || '%'
+	 		</when>
+	 		<when test='skey.equals("b")'>
+	 		AND WEBTOON_CONTENT LIKE  '%' || #{sval} || '%'
+	 		</when>
+	 		<when test='skey.equals("c")'>
+	 		AND WEBTOON_AUTHOR LIKE  '%' || #{sval} || '%'
+	 		</when>
+	 	</choose>
+	 </sql>
+
+	<select id="getWebtoonList" resultMap="WebtoonMap">
+	SELECT
+		A.*
+	FROM(
+		SELECT
+			WEBTOON.*
+			,TO_CHAR(WEBTOON.IN_DATE, 'YYYY-MM-DD-HH24:MI:SS') AS IN_DATE_STR
+			,ROW_NUMBER() OVER(ORDER BY WEBTOON.WEBTOON_IDX DESC) AS RNUM
+			,FILE_DB.SV_NAME AS SV_NAME
+		FROM WEBTOON WEBTOON
+		LEFT OUTER JOIN FILE_DB FILE_DB
+    	ON WEBTOON.WEBTOON_IDX = FILE_DB.PA_IDX
+		WHERE 
+		WEBTOON.WEBTOON_IDX IS NOT NULL
+		<include refid="webtoon_sql" />
+		ORDER BY WEBTOON.WEBTOON_IDX DESC
+	) A
+	WHERE RNUM BETWEEN #{startRow} AND #{endRow}
+	</select>
+	
+	<select id="getTotalCount" resultType="int">
+	SELECT
+		COUNT(*) AS TOTALCOUNT
+	FROM(
+		SELECT
+			WEBTOON.*
+			,TO_CHAR(WEBTOON.IN_DATE, 'YYYY-MM-DD-HH24:MI:SS') AS IN_DATE_STR
+			,ROWNUM AS RNUM
+		FROM WEBTOON WEBTOON
+		WHERE
+		WEBTOON_IDX IS NOT NULL
+		<include refid="webtoon_sql" />
+		ORDER BY WEBTOON_IDX DESC
+	) A
+	</select>
+	
+	<insert id="setWebtoon">
+	INSERT INTO WEBTOON
+	(
+		 WEBTOON_IDX
+		,WEBTOON_TITLE
+		,WEBTOON_CONTENT
+		,WEBTOON_SUMMARY
+		,WEBTOON_AUTHOR
+		,THUM
+		,IN_DATE
+		,IN_ADMIN
+		,USE_YN
+		)
+		VALUES
+	(
+		 WEBTOON_IDX_SEQ.NEXTVAL
+		,#{webtoon_title}
+		,#{webtoon_content}
+		,#{webtoon_summary}
+		,#{webtoon_author}
+		,#{thum}
+		,SYSDATE
+		,#{in_admin}
+		,#{use_yn}
+	)
+	</insert>
+	
+	<select id="getMaxIdx" resultType="int">
+	SELECT MAX(WEBTOON_IDX)+1 FROM WEBTOON
+	</select>
+	
+	<select id="getWebtoon" parameterType="String" resultMap="WebtoonMap">
+	SELECT 
+		WEBTOON.*
+    	,FILE_DB.SV_NAME
+	FROM WEBTOON 
+	LEFT OUTER JOIN FILE_DB FILE_DB 
+  	ON WEBTOON.WEBTOON_IDX = FILE_DB.PA_IDX
+	WHERE WEBTOON_IDX = #{webtoon_idx}
+	</select>
+	
+	<update id="modWebtoon" parameterType="hashMap">
+	UPDATE WEBTOON SET
+	 WEBTOON_TITLE 	 = #{webtoon_title}
+	,WEBTOON_CONTENT = #{webtoon_content}
+	,WEBTOON_SUMMARY = #{webtoon_summary}
+	,WEBTOON_AUTHOR  = #{webtoon_author}
+	,THUM 		 	 = #{thum}
+	,UP_DATE 		 = SYSDATE
+	,UP_ADMIN 		 = #{up_admin}
+	,USE_YN 		 = #{use_yn}
+	WHERE
+	WEBTOON_IDX = #{webtoon_idx}
+	</update>
+	
+	<delete id="delWebtoon" parameterType="String">
+	DELETE FROM WEBTOON
+	WHERE WEBTOON_IDX = #{webtoon_idx}
+	</delete>
+	
+	<delete id="delThum" parameterType="String">
+	UPDATE WEBTOON
+	SET THUM = NULL
+	WHERE WEBTOON_IDX = #{webtoon_idx}
+	</delete>
+	
+	
+	
+	
+	
+	
+</mapper>

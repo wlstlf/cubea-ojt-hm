@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Member">
+	
+	<insert id="setMember">
+	INSERT INTO MEMBER
+	(
+	  MEMBER_IDX
+	 ,MEMBER_TYPE
+	 ,MEMBER_ID
+	 ,MEMBER_EMAIL
+	 ,MEMBER_PW
+	 ,MEMBER_NAME
+<!-- 	 ,IN_ADMIN -->
+	 ,IN_DATE
+	)
+	VALUES
+	(
+	 MEMBER_IDX_SEQ.NEXTVAL
+	 ,#{member_type}
+	 ,#{member_id}
+	 ,#{member_email}
+	 ,#{member_pw}
+	 ,#{member_name}
+<!-- 	 ,#{in_admin} -->
+	 ,SYSDATE
+	)
+	</insert>
+	
+	<!-- ID 중복 검사 -->
+	<select id="chkMember" resultType="int">
+	SELECT
+		COUNT(*)
+	FROM MEMBER
+	WHERE MEMBER_ID = #{member_id}	
+	</select>
+	
+	
+	<!-- 로그인시 ID, PW 확인 -->
+	<select id="chkPW" resultType="int">
+	SELECT
+		COUNT(*)
+	FROM MEMBER
+	WHERE MEMBER_ID = #{member_id}	
+	AND MEMBER_PW = #{member_pw}
+	</select>
+	
+</mapper>
