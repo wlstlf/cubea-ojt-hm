@@ -9,7 +9,10 @@
 
 	<div class="ui_menu">
 		<ul>
+		
 <%
+if(session_login_status == null) session_login_status = "";
+
 if(session_login_status.equals("Y")){
 %>	
 			<li class="out"><a onclick="logout_inc('<%=session_login_id %>');" href="javascript:;">로그아웃</a></li>
@@ -21,7 +24,7 @@ if(session_login_status.equals("Y")){
 }
 %>
 		</ul>
-		<button type="button" class="login">${session_login_id }</button>
+		<button type="button" class="login"><%=session_login_id %></button>
 	</div>
 </div>
 <script type="text/javascript">

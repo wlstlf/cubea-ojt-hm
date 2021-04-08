@@ -47,4 +47,12 @@
 	AND MEMBER_PW = #{member_pw}
 	</select>
 	
+	<!-- 관리자 타입 가져오기 -->
+	<select id="getMemberType" resultType="java.lang.String">
+	SELECT 
+		MEMBER_TYPE 
+	FROM MEMBER
+	WHERE MEMBER_ID = #{member_id}
+	</select>
+	
 </mapper>

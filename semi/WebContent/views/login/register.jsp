@@ -32,7 +32,6 @@
 			alert("가입 유형을 선택해주세요.");
 			return false;
 		}
-		
 		if($("#name").val() == ""){
 			alert("이름을 입력해주세요.");
 			$("#name").focus();
@@ -65,6 +64,20 @@
 		if($("#password").val() != $("#password2").val()){
 			alert("비밀번호가 일치하지 않습니다.");
 			$("#password2").focus();
+			return false;
+		}
+		
+		//ID 회원가입 시 ID 규격 -> 5~20자의 영문 소문자, 숫자만 사용 가능합니다.
+		let id_chk = /^([a-z]|[0-9]){5,20}$/g; 
+		if(!id_chk.test($("#id").val())){
+			alert("5~20자의 영문 소문자, 숫자만 사용 가능합니다.");
+			$("#id").focus();
+			return false;
+		}
+		//PW 회원가입 시 PW 규격 -> 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.
+		let pw_chk = /^([A-Za-z0-9]|[!@#$%^&*()_+]){8,16}$/g; 
+		if(!pw_chk.test($("#password").val())){
+			alert("8~16자 영문 대 소문자, 숫자, 특수문자를 사용 가능합니다.");
 			return false;
 		}
 			
@@ -105,11 +118,6 @@
 			return false;
 		}
 		
-// 		if($("#checkId").val() == "N"){
-// 			alert("ID 중복체크를 진행해주세요.");
-// 			return false;
-// 		}
-		
 		setCount = 0;
 		if(setCount == 0){
 			setCount ++;
@@ -125,7 +133,6 @@
 					alert(data.msg);
 					
 					if(data.isOk == "Y"){
-	// 					$("#reg_btn").attr('disabled', false);
 						$("#email").focus();
 						$("#checkId").val("Y");
 						$("#checkId_btn").remove();
@@ -152,9 +159,7 @@
 <link rel="shortcut icon" href="">
 
 <meta charset="UTF-8">
-<title>Insert title here</title>
-<!-- <link type="text/css" rel="stylesheet" href="/res/css/bootstrap.map.css"> -->
-<!-- <link type="text/css" rel="stylesheet" href="/res/css/bootstrap.min.css"> -->
+<title>Register</title>
 <style type="text/css">
 body{
     margin-top:20px;
@@ -210,12 +215,12 @@ body{
 											<label>이름</label>
 											<input class="form-control form-control-lg" type="text" id="name" name="name" placeholder="Enter your name">
 										</div>
-										<div class="form-group">
+										<div class="form-group" >
 											<label class="d-block">ID</label>
 											<input class="form-control form-control-lg d-inline-block w-75" type="text" id="id" name="id" placeholder="Enter your id">
 											<button class="btn btn-primary btn-lg align-top" type="button" id="checkId_btn" name="checkId_btn" value="" onclick="chkId();">중복확인</button>
+											<p style="margin-left:5px">(5~20자의 영문 소문자, 숫자만 사용 가능합니다.)</p>
 											<input type="hidden" id="checkId" name="checkId" value="N">
-											
 										</div>
 										<div class="form-group">
 											<label>Email</label>
@@ -224,6 +229,7 @@ body{
 										<div class="form-group">
 											<label>Password</label>
 											<input class="form-control form-control-lg" type="password" id="password" name="password" placeholder="Enter password">
+											<p style="margin-left:5px">(8~16자 영문 대 소문자, 숫자, 특수문자만 사용 가능합니다.)</p>
 										</div>
 										<div class="form-group">
 											<label>Compare Password</label>

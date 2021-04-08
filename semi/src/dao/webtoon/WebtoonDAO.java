@@ -103,18 +103,19 @@ public class WebtoonDAO {
 			sqlSession.close();
 		}
 		
+		
 		return result;
 	}
 	
-	/* method 	: getMaxIdx
-	 * param	: MemberDTO 
+	/* method 	: getNextVal
+	 * param	:  
 	 * result	: int
-	 * desc		: max idx
+	 * desc		: getNextVal
 	 * */
-	public int getMaxIdx() {
+	public int getNextVal() {
 		sqlSession = sqlSessionFactory.openSession();
 		
-		String target_name = "Webtoon.getMaxIdx";
+		String target_name = "Webtoon.getNextVal";
 		
 		logger.debug("Target NameSpace - " + target_name);
 		

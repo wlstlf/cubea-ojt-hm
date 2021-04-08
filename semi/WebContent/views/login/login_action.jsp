@@ -23,10 +23,6 @@ public void setReturn(String isOk, String msg, HttpServletResponse response) {
 	String member_id = request.getParameter("id");
 	String member_pw = request.getParameter("password");
 	
-	out.println("member_id : " + member_id);
-	out.println("<br/>");
-	out.println("member_pw : " + member_pw);
-	
 	//DAO
 	CommonDAO commonDAO = new CommonDAO();
 	MemberDAO memberDAO = new MemberDAO();
@@ -47,11 +43,20 @@ public void setReturn(String isOk, String msg, HttpServletResponse response) {
 		memberDTO.setMember_id(member_id);
 		memberDTO.setMember_pw(member_pw);
 		
+		String member_type = "";
+		member_type = memberDAO.getMemberType(member_id);
+		
+		if(member_type.equals("")){
+			type = "TYPE_ERROR";
+			isOk = "N";
+			response.sendRedirect("login.jsp?type=" + type + "&isOk=" + isOk);
+		}
+		
+		
 		int chkID = memberDAO.chkMember(memberDTO);
 		
 		if(chkID == 0){
 			type = "ID_ERROR";
-// 			msg = "ID가 존재하지 않습니다.";
 			isOk = "N";
 			response.sendRedirect("login.jsp?type=" + type + "&isOk=" + isOk);
 		}else{
@@ -59,17 +64,16 @@ public void setReturn(String isOk, String msg, HttpServletResponse response) {
 			
 			if(chkPW == 0){
 				type = "PW_ERROR";
-// 				msg = "비밀번호가 일치하지 않습니다. 다시 입력해주세요.";
 				isOk = "N";
 				response.sendRedirect("login.jsp?type=" + type + "&isOk=" + isOk);
 				
 			}else{
-// 				type = "";
-// 				msg = "로그인에 성공했습니다.";
 				isOk = "Y";
 				request.getSession().setAttribute("LOGIN_ID", memberDTO.getMember_id());
 				request.getSession().setAttribute("LOGIN_STATUS", "Y");
+				request.getSession().setAttribute("LOGIN_TYPE", member_type);
 				response.sendRedirect("/views/webtoon/webtoon.jsp?isOk=" + isOk);
+				
 			}
 		}
 	}

@@ -25,6 +25,8 @@
 		<result column="totalCount" property="totalCount"/>
 		
 		<result column="sv_name" property="sv_name"/>
+		
+		<result column="nextVal" property="nextVal"/>
 	 </resultMap>
 	 
 	 <sql id="webtoon_sql">
@@ -92,7 +94,7 @@
 		)
 		VALUES
 	(
-		 WEBTOON_IDX_SEQ.NEXTVAL
+		#{nextVal}
 		,#{webtoon_title}
 		,#{webtoon_content}
 		,#{webtoon_summary}
@@ -104,8 +106,8 @@
 	)
 	</insert>
 	
-	<select id="getMaxIdx" resultType="int">
-	SELECT MAX(WEBTOON_IDX)+1 FROM WEBTOON
+	<select id="getNextVal" resultType="int">
+	SELECT WEBTOON_IDX_SEQ.NEXTVAL FROM DUAL
 	</select>
 	
 	<select id="getWebtoon" parameterType="String" resultMap="WebtoonMap">
@@ -124,7 +126,9 @@
 	,WEBTOON_CONTENT = #{webtoon_content}
 	,WEBTOON_SUMMARY = #{webtoon_summary}
 	,WEBTOON_AUTHOR  = #{webtoon_author}
+	<if test='thum != null'>
 	,THUM 		 	 = #{thum}
+	</if>
 	,UP_DATE 		 = SYSDATE
 	,UP_ADMIN 		 = #{up_admin}
 	,USE_YN 		 = #{use_yn}
