@@ -4,8 +4,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@page import="org.json.simple.JSONObject"%>
 <%
-	request.getSession().setAttribute("LOGIN_ID", null);
-	request.getSession().setAttribute("LOGIN_STAUTS", null);
+	request.getSession().setAttribute("LOGIN_ID", "");
+	request.getSession().setAttribute("LOGIN_STATUS", "");
+	request.getSession().setAttribute("LOGIN_TYPE", "");
 	
 	response.sendRedirect("/views/webtoon/webtoon.jsp");
 %>

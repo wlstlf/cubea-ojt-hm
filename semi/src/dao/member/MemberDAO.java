@@ -108,4 +108,37 @@ public class MemberDAO {
 		
 		return result;
 	}
+	
+	/* method 	: getMemberType
+	 * param	: member_id
+	 * result	: int
+	 * desc		: PW 중복 체크
+	 * */
+	
+	public String getMemberType(String member_id) {
+		String type = "";
+		
+		SqlSessionFactory sqlSessionFactory = SqlSessionManager.getSqlSession();
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		
+		String target_name = "Member.getMemberType";
+		
+		logger.debug("■ Target NameSpace : " + target_name);
+		
+		try {
+			type = sqlSession.selectOne(target_name, member_id);
+			
+			sqlSession.commit();			
+		}catch(Exception e) {
+			sqlSession.rollback();
+			
+			e.printStackTrace();
+		}finally {
+			sqlSession.close();
+		}
+		
+		
+		return type;
+			
+	}
 }

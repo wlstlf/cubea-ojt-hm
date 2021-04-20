@@ -30,6 +30,10 @@
 				alert("비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
 				location.href = "./login.jsp";
 			}
+			else if(type == "TYPE_ERROR"){
+				alert("멤버 타입이 존재하지 않습니다.");
+				location.href = "./login.jsp";
+			}
 		}
 	});
 	
@@ -91,7 +95,7 @@ function setForm(){
           <h1 class="text-center">Login</h1>          
       </div>
       <div class="modal-body">
-          <form class="form col-md-12 center-block" id="loginForm" name="loginForm" action="./login_action.jsp" method="post">
+          <form class="form col-md-12 center-block" id="loginForm" name="loginForm" action="/views/login/login_action.jsp" method="post">
             <div class="form-group">
               <input type="text" class="form-control input-lg" placeholder="ID" id="id" name="id">
             </div>
@@ -100,7 +104,7 @@ function setForm(){
             </div>
             <div class="form-group">
               <button type="button" class="btn btn-primary btn-lg btn-block" onclick="setForm();">Sign In</button>
-              <span class="pull-right"><a href="./register.jsp">Register</a></span><span><a href="#">Need help?</a></span>
+              <span class="pull-right"><a href="/views/login/register.jsp">Register</a></span><span><a href="#">Need help?</a></span>
             </div>
           </form>
       </div>

@@ -26,6 +26,8 @@ public class WebtoonDTO {
 	private String skey;
 	private String sval;
 	private String sv_name;
+	private int nextVal;
+	
 	
 	
 	
@@ -170,5 +172,11 @@ public class WebtoonDTO {
 	}
 	public void setSv_name(String sv_name) {
 		this.sv_name = sv_name;
+	}
+	public int getNextVal() {
+		return nextVal;
+	}
+	public void setNextVal(int nextVal) {
+		this.nextVal = nextVal;
 	}
 }

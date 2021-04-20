@@ -61,12 +61,9 @@
 	
 	CommonDAO commonDAO = new CommonDAO();
 	
-	//INSERT 후 REDIRECT할 webtoon_idx
-	int max_idx = webtoonDAO.getMaxIdx();
-	
-	
 	if(request.getParameter("act") != null) act = request.getParameter("act");
-	//등록시
+	
+	//등록시***********************************************************************************************************************************************
 	if(act.equals("I")){
 		//MULTI START
 		multi = new MultipartRequest(request, savePath, sizeLimit, "utf-8", new DefaultFileRenamePolicy());
@@ -119,6 +116,21 @@
 		if(multi.getParameter("use_yn") != null) 			use_yn = multi.getParameter("use_yn");
 		//MULTI END
 		
+		 //VAL CHECK
+		 if(webtoon_title.equals("")
+		 || webtoon_content.equals("")
+		 || webtoon_author.equals(""))
+		 {
+			 isOk = "N";
+			 type = "VAL_FAIL";
+			 response.sendRedirect("./write.jsp?isOk=" + isOk + "&type=" + type);			 
+			 return;
+		 }
+			 
+		
+		//INSERT 후 REDIRECT할 webtoon_idx
+		int nextVal = webtoonDAO.getNextVal();
+		
 		//DTO
 		WebtoonDTO webtoonDTO = new WebtoonDTO();
 		FileDTO fileDTO = new FileDTO();
@@ -126,7 +138,10 @@
 		//DTO SET
 		in_admin = (String) request.getSession().getAttribute("LOGIN_ID");
 		
-		webtoonDTO.setWebtoon_idx(webtoon_idx);
+		out.println("<br/>");
+		out.println("nextVal : " + nextVal);
+		
+		webtoonDTO.setNextVal(nextVal);
 		webtoonDTO.setWebtoon_title(webtoon_title);
 		webtoonDTO.setWebtoon_content(webtoon_content);
 		webtoonDTO.setWebtoon_summary(webtoon_summary);
@@ -138,10 +153,11 @@
 		int file_result = 0;
 		//FILE DTO CHECK
 		if(check){
+			
 			webtoonDTO.setThum(ori_name);
 			
 			fileDTO.setFile_type(file_type);
-			fileDTO.setPa_idx(Integer.toString(max_idx));
+			fileDTO.setPa_idx(Integer.toString(nextVal));
 			fileDTO.setOri_name(ori_name);
 			fileDTO.setSv_name(file_name);
 			fileDTO.setIn_user(in_admin);
@@ -165,7 +181,7 @@
 		if(result == 1){
 			isOk = "Y";
 			type = "SET_SUCC";
-			response.sendRedirect("./write.jsp?webtoon_idx=" + max_idx + "&isOk=" + isOk + "&type=" + type);
+			response.sendRedirect("./write.jsp?webtoon_idx=" + nextVal + "&isOk=" + isOk + "&type=" + type);
 		}else{
 			//등록 실패시
 			isOk = "N";
@@ -173,10 +189,12 @@
 			response.sendRedirect("./write.jsp?isOk=" + isOk + "&type=" + type);
 		}
  	}
-	//수정시	
+	//수정시	***********************************************************************************************************************************************
 	else if(act.equals("U")){
 		//MULTI START
 		multi = new MultipartRequest(request, savePath, sizeLimit, "utf-8", new DefaultFileRenamePolicy());
+		
+		System.out.println("===multi.getFilesystemName(thum) : " + multi.getFilesystemName("thum"));
 		
 		boolean check = false;
 		if(multi.getFilesystemName("thum") != null) check = true;
@@ -203,7 +221,7 @@
 				File getFile = multi.getFile(file);
 				file_size = file.length();
 				
-				HashMap param = new HashMap<String, Object>();
+				HashMap<String, Object> param = new HashMap<String, Object>();
 				param.put("pa_idx", webtoon_idx);
 				param.put("sv_name", webtoonDTO.getSv_name());
 				
@@ -220,6 +238,20 @@
 		if(multi.getParameter("webtoon_author") != null) 	webtoon_author = multi.getParameter("webtoon_author");
 		if(multi.getParameter("thum") != null) 				thum = multi.getParameter("thum");
 		if(multi.getParameter("use_yn") != null) 			use_yn = multi.getParameter("use_yn");
+		
+		System.out.println("===thum : " + thum);
+		System.out.println("===check : " + check);
+		
+		//VAL CHECK
+		 if(webtoon_title.equals("")
+		 || webtoon_content.equals("")
+		 || webtoon_author.equals(""))
+		 {
+			 isOk = "N";
+			 type = "VAL_FAIL";
+			 response.sendRedirect("./write.jsp?isOk=" + isOk + "&type=" + type);			 
+			 return;
+		 }
 		
 		//DTO
 		webtoonDTO = new WebtoonDTO();
@@ -275,12 +307,21 @@
 			response.sendRedirect("./write.jsp?webtoon_idx=" + webtoon_idx + "&isOk=" + isOk + "&type=" + type);
 		}
 	}
-	//삭제시	
+	//삭제시	***********************************************************************************************************************************************
 	else if(act.equals("D")){
 		if(request.getParameter("webtoon_idx") != null) webtoon_idx = request.getParameter("webtoon_idx"); 
 		if(request.getParameter("sv_name") != null) sv_name = request.getParameter("sv_name"); 
 		
-		HashMap param = new HashMap<String, Object>();
+		if(webtoon_idx.equals("")){
+			//수정 실패
+			isOk = "N";
+			type = "VAL_FAIL";
+			response.sendRedirect("./webtoon.jsp?isOk=" + isOk + "&type=" + type);
+			return;
+		}
+		
+		
+		HashMap<String, Object> param = new HashMap<String, Object>();
 		param.put("pa_idx", webtoon_idx);
 		param.put("sv_name", sv_name);
 		
